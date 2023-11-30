@@ -2,15 +2,26 @@
 #ifndef CONNECT_H
 #define CONNECT_H
 
-#include <QMainWindow>
-#include <QObject>
-#include <QWidget>
+#include "libssh2.h"
+#include <ws2tcpip.h>
+#include <iostream>
 
-class connect
-{
-//    Q_OBJECT
+// Подключение библиотеки ws2_32.lib
+#pragma comment(lib, "ws2_32.lib")
+
+class SSHConnector {
 public:
-    connect();
-};
+    SSHConnector();
+    ~SSHConnector();
 
+    bool connectToSSH(const std::string& hostname, const std::string& username, const std::string& password, int port = 22);
+    void disconnectToSSH();
+    LIBSSH2_SESSION* getSession();
+
+private:
+    SOCKET sock;
+    WSADATA wsadata;
+    struct sockaddr_in sin;
+    LIBSSH2_SESSION* session;
+};
 #endif // CONNECT_H
