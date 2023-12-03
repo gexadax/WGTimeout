@@ -6,22 +6,25 @@ LIBSSH2_SESSION* SSHConnector::getSession() {
 }
 
 SSHConnector::SSHConnector() : sock(INVALID_SOCKET), session(nullptr) {
-    // Инициализация Winsock
+    // Initializing Winsock
     WSAStartup(MAKEWORD(2, 0), &wsadata);
 }
 
 SSHConnector::~SSHConnector() {
     disconnectToSSH();
 
-    // Очистка библиотеки libssh2
+    // Cleaning libssh2 library
     libssh2_exit();
 
-    // Завершение Winsock
+    // Completing Winsock
     WSACleanup();
 }
 
-bool SSHConnector::connectToSSH(const std::string& hostname, const std::string& username, const std::string& password, int port) {
-    // Создание сокета
+bool SSHConnector::connectToSSH(const std::string& hostname,
+                                const std::string& username,
+                                const std::string& password,
+                                int port) {
+    // Creating socket
     sock = socket(AF_INET, SOCK_STREAM, 0);
 
     sin.sin_family = AF_INET;
@@ -30,27 +33,27 @@ bool SSHConnector::connectToSSH(const std::string& hostname, const std::string& 
 
     connect(sock, (struct sockaddr*)(&sin), sizeof(struct sockaddr_in));
 
-    // Инициализация библиотеки libssh2
+    // Initializing the libssh2 library
     libssh2_init(0);
 
-    // Создание новой сессии
+    // Creating a new session
     session = libssh2_session_init();
 
-    // Подключение к серверу SSH
+    // Connecting to SSH server
     return libssh2_session_handshake(session, sock) == 0 &&
            libssh2_userauth_password(session, username.c_str(), password.c_str()) == 0;
 }
 
 void SSHConnector::disconnectToSSH() {
     if (session) {
-        // Закрытие сессии
+        // Closing the session
         libssh2_session_disconnect(session, "Bye bye, cruel world");
         libssh2_session_free(session);
         session = nullptr;
     }
 
     if (sock != INVALID_SOCKET) {
-        // Закрытие сокета
+        // Closing a socket
         closesocket(sock);
         sock = INVALID_SOCKET;
     }

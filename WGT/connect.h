@@ -2,11 +2,11 @@
 #ifndef CONNECT_H
 #define CONNECT_H
 
-#include "libssh2.h"
+#include <libssh2.h>
 #include <ws2tcpip.h>
 #include <iostream>
 
-// Подключение библиотеки ws2_32.lib
+// Connecting the ws2_32.lib library
 #pragma comment(lib, "ws2_32.lib")
 
 class SSHConnector {
@@ -14,7 +14,10 @@ public:
     SSHConnector();
     ~SSHConnector();
 
-    bool connectToSSH(const std::string& hostname, const std::string& username, const std::string& password, int port = 22);
+    bool connectToSSH(const std::string& hostname,
+                      const std::string& username,
+                      const std::string& password,
+                      int port = 22);
     void disconnectToSSH();
     LIBSSH2_SESSION* getSession();
 

@@ -12,27 +12,27 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::executeSSHCommand(SSHConnector& sshConnector, const std::string& command) {
-    // Выполнение команды SSH
+    // Executing SSH command
     LIBSSH2_CHANNEL* channel = libssh2_channel_open_session(sshConnector.getSession());
     if (channel) {
         libssh2_channel_exec(channel, command.c_str());
 
-        // Ожидание завершения выполнения команды
+        // Waiting for the command to complete execution
         char buffer[4096];
         int nbytes;
         do {
             nbytes = libssh2_channel_read(channel, buffer, sizeof(buffer));
             if (nbytes > 0) {
-                // Обработка вывода команды, если необходимо
+                // Process command output if need
             }
         } while (nbytes > 0);
 
-        // Закрытие канала после выполнения команды
+        // Closing a channel after executing a command
         libssh2_channel_free(channel);
     }
 }
 
-void MainWindow::on_pushButton_clicked() {
+void MainWindow::slot_pushButton_clicked() {
     SSHConnector sshConnector;
 
     std::string hostname = "server";

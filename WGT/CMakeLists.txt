@@ -11,9 +11,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
-include_directories()
-link_directories(C:\\CPP\\SimpleSSHclient\\SimpleSSHclient\\libssh2\\lib)
-
+include_directories(C:/Qt_Projects/WGTimeout/WGT)
+link_directories(C:/Qt_Projects/WGTimeout/WGT)
 
 set(PROJECT_SOURCES
         main.cpp
