@@ -12,7 +12,7 @@ void saveSettings(const QString& filePath, const QString& server, const QString&
     settings.setValue("Port", port);
 }
 
-void loadSettings(const QString& filePath, QString& server, QString& user, QString& password, int& port) {
+void DialogSettings::loadSettings(const QString& filePath, QString& server, QString& user, QString& password, int& port) {
     QSettings settings(filePath, QSettings::IniFormat);
     server = settings.value("Server").toString();
     user = settings.value("User").toString();
@@ -26,7 +26,7 @@ DialogSettings::DialogSettings(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // Загружаем настройки при создании диалога
+    // Load settings when creating the dialog
     QString server, user, password;
     int port;
     loadSettings("settings.ini", server, user, password, port);
@@ -57,7 +57,7 @@ int DialogSettings::getPort() const {
     return ui->spinBox->value();
 }
 
-void DialogSettings::executeSSHCommand(SSHConnector& sshConnector, const std::string& command) {
+void DialogSettings::executeSSHCommand(const std::string& command) {
     // Executing SSH command
     LIBSSH2_CHANNEL* channel = libssh2_channel_open_session(sshConnector.getSession());
     if (channel) {
@@ -80,29 +80,39 @@ void DialogSettings::executeSSHCommand(SSHConnector& sshConnector, const std::st
 
 void DialogSettings::on_buttonBox_accepted()
 {
-    // Получаем введенные значения из диалога
+    // Get values entered in the dialog
     std::string hostname = this->getServer();
     std::string username = this->getUser();
     std::string password = this->getPassword();
     int port = this->getPort();
 
-    // Сохраняем настройки в файл
-    saveSettings("settings.ini", QString::fromStdString(hostname), QString::fromStdString(username), QString::fromStdString(password), port);
+    // Save settings to file
+    saveSettings("settings.ini",
+                 QString::fromStdString(hostname),
+                 QString::fromStdString(username),
+                 QString::fromStdString(password),
+                 port);
 
-    // Далее осуществляем подключение с использованием полученных данных
+    // Connect using the entered data
     SSHConnector sshConnector;
     if (sshConnector.connectToSSH(hostname, username, password, port)) {
-        // Подключение успешно
+        // Connection successful
         std::cout << "SSH Connection successful" << std::endl;
 
-        // Выполняем SSH-операции...
+        // Perform SSH operations...
 
-        // Открываем главное окно
+        // Open the main window
         MainWindow mainWindow;
         mainWindow.show();
-        this->accept(); // Закрыть диалог настроек
+        this->accept(); // Close the settings dialog
     } else {
-        // Ошибка подключения
+        // Connection error
         std::cerr << "SSH Connection failed" << std::endl;
     }
 }
+
+
+
+
+
+

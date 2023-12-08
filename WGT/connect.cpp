@@ -7,11 +7,11 @@ SSHConnector::SSHConnector() : sock(INVALID_SOCKET), session(nullptr) {
 }
 
 SSHConnector::~SSHConnector() {
-    disconnectAndCleanup();
+    // disconnectAndCleanup();
 }
 
-bool SSHConnector::connectToSSH(const std::string& hostname,
-                                const std::string& username,
+bool SSHConnector::connectToSSH(const std::string& server,
+                                const std::string& user,
                                 const std::string& password,
                                 int port) {
     // Creating socket
@@ -23,7 +23,7 @@ bool SSHConnector::connectToSSH(const std::string& hostname,
 
     sin.sin_family = AF_INET;
     sin.sin_port = htons(port);
-    inet_pton(AF_INET, hostname.c_str(), &(sin.sin_addr));
+    inet_pton(AF_INET, server.c_str(), &(sin.sin_addr));
 
     if (connect(sock, (struct sockaddr*)(&sin), sizeof(struct sockaddr_in)) == SOCKET_ERROR) {
         std::cerr << "Error connecting to server: " << WSAGetLastError() << std::endl;
@@ -39,7 +39,7 @@ bool SSHConnector::connectToSSH(const std::string& hostname,
 
     // Connecting to SSH server
     if (libssh2_session_handshake(session, sock) != 0 ||
-        libssh2_userauth_password(session, username.c_str(), password.c_str()) != 0) {
+        libssh2_userauth_password(session, user.c_str(), password.c_str()) != 0) {
         std::cerr << "Error connecting to SSH server or authenticating" << std::endl;
         disconnectToSSH();
         return false;

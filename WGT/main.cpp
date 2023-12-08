@@ -1,4 +1,4 @@
-//main.cpp
+// main.cpp
 #include "mainwindow.h"
 #include "settings.h"
 
@@ -9,29 +9,29 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    // Путь к директории программы
+    // Path to the program directory
     QString programDir = QCoreApplication::applicationDirPath();
 
-    // Полный путь к файлу settings.ini
+    // Full path to the settings.ini file
     QString settingsFilePath = programDir + "/settings.ini";
 
-    // Проверяем наличие файла
+    // Check if the file exists
     if (!QFile::exists(settingsFilePath)) {
-        // Файл не существует, открываем окно DialogSettings
+        // File does not exist, open the DialogSettings window
         DialogSettings dialogSettings;
         if (dialogSettings.exec() == QDialog::Accepted) {
-            // Принято, продолжаем выполнение программы
-            // Открываем главное окно
+            // Accepted, continue program execution
+            // Open the main window
             MainWindow mainWindow;
             mainWindow.show();
             return a.exec();
         } else {
-            // Отменено или закрыто, обрабатываем соответственно
+            // Canceled or closed, handle accordingly
             return 0;
         }
     } else {
-        // Файл существует, продолжаем выполнение программы
-        // Открываем главное окно
+        // File exists, continue program execution
+        // Open the main window
         MainWindow mainWindow;
         mainWindow.show();
         return a.exec();
