@@ -1,4 +1,4 @@
-//connect.h
+// connect.h
 #ifndef CONNECT_H
 #define CONNECT_H
 
@@ -19,6 +19,7 @@ public:
                       const std::string& password,
                       int port = 22);
     void disconnectToSSH();
+    void disconnectAndCleanup();
     LIBSSH2_SESSION* getSession();
 
 private:
