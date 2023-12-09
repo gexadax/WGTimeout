@@ -1,5 +1,6 @@
 // connect.cpp
 #include "connect.h"
+#include <qlogging.h>
 
 SSHConnector::SSHConnector() : sock(INVALID_SOCKET), session(nullptr) {
     // Initializing Winsock
@@ -51,7 +52,7 @@ bool SSHConnector::connectToSSH(const std::string& server,
 
 void SSHConnector::disconnectToSSH() {
     if (session) {
-        libssh2_session_disconnect(session, "Bye bye, cruel world");
+        libssh2_session_disconnect(session, "The WireGuard Timeout application has terminated.");
         libssh2_session_free(session);
         session = nullptr;
     }

@@ -18,3 +18,18 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 MainWindow::~MainWindow() {
     delete ui;
 }
+
+void MainWindow::on_actionExit_triggered()
+{
+    this->close();
+}
+
+void MainWindow::on_actionSettings_triggered()
+{
+    // Create an instance of the DialogSettings class
+    DialogSettings settingsDialog(this); // Assuming DialogSettings is a QDialog
+
+    // Show the settings window
+    settingsDialog.exec();
+}
+

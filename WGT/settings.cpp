@@ -30,10 +30,10 @@ DialogSettings::DialogSettings(QWidget *parent) :
     QString server, user, password;
     int port;
     loadSettings("settings.ini", server, user, password, port);
-    ui->textEdit->setPlainText(server);
-    ui->textEdit_2->setPlainText(user);
-    ui->lineEdit->setText(password);
-    ui->spinBox->setValue(port);
+    ui->textEdit_server->setPlainText(server);
+    ui->textEdit_user->setPlainText(user);
+    ui->lineEdit_password->setText(password);
+    ui->spinBox_port->setValue(port);
 }
 
 DialogSettings::~DialogSettings()
@@ -42,19 +42,19 @@ DialogSettings::~DialogSettings()
 }
 
 std::string DialogSettings::getServer() const {
-    return ui->textEdit->toPlainText().toStdString();
+    return ui->textEdit_server->toPlainText().toStdString();
 }
 
 std::string DialogSettings::getUser() const {
-    return ui->textEdit_2->toPlainText().toStdString();
+    return ui->textEdit_user->toPlainText().toStdString();
 }
 
 std::string DialogSettings::getPassword() const {
-    return ui->lineEdit->text().toStdString();
+    return ui->lineEdit_password->text().toStdString();
 }
 
 int DialogSettings::getPort() const {
-    return ui->spinBox->value();
+    return ui->spinBox_port->value();
 }
 
 void DialogSettings::executeSSHCommand(const std::string& command) {
@@ -78,7 +78,7 @@ void DialogSettings::executeSSHCommand(const std::string& command) {
     }
 }
 
-void DialogSettings::on_buttonBox_accepted()
+void DialogSettings::on_buttonBox_settings_accepted()
 {
     // Get values entered in the dialog
     std::string hostname = this->getServer();

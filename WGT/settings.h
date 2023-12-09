@@ -28,8 +28,8 @@ public:
                              QString& password,
                              int& port);
 private slots:
-    void on_buttonBox_accepted();
     void executeSSHCommand(const std::string& command);
+    void on_buttonBox_settings_accepted();
 
 private:
     Ui::DialogSettings *ui;
