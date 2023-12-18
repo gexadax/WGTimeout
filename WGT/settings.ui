@@ -17,14 +17,14 @@
    <item>
     <layout class="QFormLayout" name="formLayout_config">
      <item row="0" column="0">
-      <widget class="QLabel" name="label_server">
+      <widget class="QLabel" name="label_Hostname">
        <property name="text">
-        <string>Server:</string>
+        <string>Hostname:</string>
        </property>
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QTextEdit" name="textEdit_server">
+      <widget class="QTextEdit" name="textEdit_Hostname">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -40,14 +40,14 @@
       </widget>
      </item>
      <item row="1" column="0">
-      <widget class="QLabel" name="label_user">
+      <widget class="QLabel" name="label_User">
        <property name="text">
-        <string>User:</string>
+        <string>Username:</string>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QTextEdit" name="textEdit_user">
+      <widget class="QTextEdit" name="textEdit_Username">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -63,14 +63,14 @@
       </widget>
      </item>
      <item row="2" column="0">
-      <widget class="QLabel" name="label_password">
+      <widget class="QLabel" name="label_Password">
        <property name="text">
         <string>Password:</string>
        </property>
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QLineEdit" name="lineEdit_password">
+      <widget class="QLineEdit" name="lineEdit_Password">
        <property name="maximumSize">
         <size>
          <width>200</width>
@@ -83,14 +83,14 @@
       </widget>
      </item>
      <item row="3" column="0">
-      <widget class="QLabel" name="label_port">
+      <widget class="QLabel" name="label_Port">
        <property name="text">
         <string>Port:</string>
        </property>
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QSpinBox" name="spinBox_port">
+      <widget class="QSpinBox" name="spinBox_Port">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>0</horstretch>

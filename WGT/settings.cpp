@@ -4,20 +4,20 @@
 #include "ui_settings.h"
 #include <QSettings>
 
-void saveSettings(const QString& filePath, const QString& server, const QString& user, const QString& password, int port) {
+void saveSettings(const QString& filePath, const QString& hostname, const QString& username, const QString& password, int port) {
     QSettings settings(filePath, QSettings::IniFormat);
-    settings.setValue("Server", server);
-    settings.setValue("User", user);
-    settings.setValue("Password", password);
-    settings.setValue("Port", port);
+    settings.setValue("hostname", hostname);
+    settings.setValue("username", username);
+    settings.setValue("password", password);
+    settings.setValue("port", port);
 }
 
-void DialogSettings::loadSettings(const QString& filePath, QString& server, QString& user, QString& password, int& port) {
+void DialogSettings::loadSettings(const QString& filePath, QString& hostname, QString& username, QString& password, int& port) {
     QSettings settings(filePath, QSettings::IniFormat);
-    server = settings.value("Server").toString();
-    user = settings.value("User").toString();
-    password = settings.value("Password").toString();
-    port = settings.value("Port").toInt();
+    hostname = settings.value("hostname").toString();
+    username = settings.value("username").toString();
+    password = settings.value("password").toString();
+    port = settings.value("port").toInt();
 }
 
 DialogSettings::DialogSettings(QWidget *parent) :
@@ -27,13 +27,13 @@ DialogSettings::DialogSettings(QWidget *parent) :
     ui->setupUi(this);
 
     // Load settings when creating the dialog
-    QString server, user, password;
+    QString hostname, username, password;
     int port;
-    loadSettings("settings.ini", server, user, password, port);
-    ui->textEdit_server->setPlainText(server);
-    ui->textEdit_user->setPlainText(user);
-    ui->lineEdit_password->setText(password);
-    ui->spinBox_port->setValue(port);
+    loadSettings("settings.ini", hostname, username, password, port);
+    ui->textEdit_Hostname->setPlainText(hostname);
+    ui->textEdit_Username->setPlainText(username);
+    ui->lineEdit_Password->setText(password);
+    ui->spinBox_Port->setValue(port);
 }
 
 DialogSettings::~DialogSettings()
@@ -41,48 +41,56 @@ DialogSettings::~DialogSettings()
     delete ui;
 }
 
-std::string DialogSettings::getServer() const {
-    return ui->textEdit_server->toPlainText().toStdString();
+std::string DialogSettings::getHostname() const {
+    return ui->textEdit_Hostname->toPlainText().toStdString();
 }
 
-std::string DialogSettings::getUser() const {
-    return ui->textEdit_user->toPlainText().toStdString();
+std::string DialogSettings::getUsername() const {
+    return ui->textEdit_Username->toPlainText().toStdString();
 }
 
 std::string DialogSettings::getPassword() const {
-    return ui->lineEdit_password->text().toStdString();
+    return ui->lineEdit_Password->text().toStdString();
 }
 
 int DialogSettings::getPort() const {
-    return ui->spinBox_port->value();
+    return ui->spinBox_Port->value();
 }
 
 void DialogSettings::executeSSHCommand(const std::string& command) {
     // Executing SSH command
     LIBSSH2_CHANNEL* channel = libssh2_channel_open_session(sshConnector.getSession());
     if (channel) {
-        libssh2_channel_exec(channel, command.c_str());
+        if (libssh2_channel_exec(channel, command.c_str()) == 0) {
+            // Waiting for command execution to complete
+            char buffer[4096];
+            int nbytes;
+            do {
+                nbytes = libssh2_channel_read(channel, buffer, sizeof(buffer));
+                if (nbytes > 0) {
+                    // Processing command output if needed
+                }
+            } while (nbytes > 0);
+        } else {
+            // Handling the case of a failed command execution
+            std::cerr << "Failed to execute SSH command: " << command << std::endl;
+            // Display error message or take other necessary actions
+        }
 
-        // Waiting for the command to complete execution
-        char buffer[4096];
-        int nbytes;
-        do {
-            nbytes = libssh2_channel_read(channel, buffer, sizeof(buffer));
-            if (nbytes > 0) {
-                // Process command output if needed
-            }
-        } while (nbytes > 0);
-
-        // Closing a channel after executing a command
+        // Closing the channel after command execution
         libssh2_channel_free(channel);
+    } else {
+        // Handling the case when the channel failed to open
+        std::cerr << "Failed to open SSH channel." << std::endl;
+        // Display error message or take other necessary actions
     }
 }
 
 void DialogSettings::on_buttonBox_settings_accepted()
 {
     // Get values entered in the dialog
-    std::string hostname = this->getServer();
-    std::string username = this->getUser();
+    std::string hostname = this->getHostname();
+    std::string username = this->getUsername();
     std::string password = this->getPassword();
     int port = this->getPort();
 
@@ -110,9 +118,3 @@ void DialogSettings::on_buttonBox_settings_accepted()
         std::cerr << "SSH Connection failed" << std::endl;
     }
 }
-
-
-
-
-
-

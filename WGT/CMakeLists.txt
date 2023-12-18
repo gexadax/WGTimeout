@@ -24,6 +24,8 @@ set(PROJECT_SOURCES
         settings.ui
         connect.cpp
         connect.h
+        users.h
+        users.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -45,11 +47,17 @@ else()
     else()
         add_executable(WGT
             ${PROJECT_SOURCES}
-            connect.h
-            connect.cpp
-            settings.ui
-            settings.h
+            main.cpp
+            mainwindow.cpp
+            mainwindow.h
+            mainwindow.ui
             settings.cpp
+            settings.h
+            settings.ui
+            connect.cpp
+            connect.h
+            users.h
+            users.cpp
         )
     endif()
 endif()

@@ -21,7 +21,7 @@ public:
     void disconnectToSSH();
     void disconnectAndCleanup();
     LIBSSH2_SESSION* getSession();
-
+    std::string executeCommand(const std::string& command) const;
 private:
     SOCKET sock;
     WSADATA wsadata;
