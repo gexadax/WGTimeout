@@ -9,6 +9,10 @@ namespace Ui {
 class DialogSettings;
 }
 
+class MainWindow;
+
+void checkAndOpenSettingsDialog(MainWindow* mainWindow);
+
 class DialogSettings : public QDialog
 {
     Q_OBJECT

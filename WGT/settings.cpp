@@ -86,6 +86,27 @@ void DialogSettings::executeSSHCommand(const std::string& command) {
     }
 }
 
+void checkAndOpenSettingsDialog(MainWindow* mainWindow) {
+    // Path to the program directory
+    QString programDir = QCoreApplication::applicationDirPath();
+
+    // Full path to the settings.ini file
+    QString settingsFilePath = programDir + "/settings.ini";
+
+    // Check if the file exists
+    if (!QFile::exists(settingsFilePath)) {
+        // File does not exist, open the DialogSettings window
+        DialogSettings dialogSettings;
+        if (dialogSettings.exec() != QDialog::Accepted) {
+            // Canceled or closed, handle accordingly
+            if (mainWindow) {
+                mainWindow->close();
+            }
+            return;
+        }
+    }
+}
+
 void DialogSettings::on_buttonBox_settings_accepted()
 {
     // Get values entered in the dialog
