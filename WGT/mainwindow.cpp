@@ -21,17 +21,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         // Connection successful
         std::cout << "SSH Connection successful" << std::endl;
 
-        // Get the list of user names
-        std::string command = "ls configs | awk '{print $1}' | xargs -I {} basename {} .conf";
-        sshCommandResult = QString::fromStdString(sshConnector.executeCommand(command));
-        std::cout << "SSH Command Result: " << sshCommandResult.toStdString() << std::endl;
-        std::cout << "SSH Command executed successfully." << std::endl;
+        // Get the list of user names using the getUserNames function
+        QStringList userNames = users::getUserNames(sshConnector);
 
         // Create a model for the QListView
         QStringListModel *model = new QStringListModel(this);
 
-        // Add user names to the model
-        QStringList userNames = sshCommandResult.split('\n', QString::SkipEmptyParts);
+        // Set the user names to the model
         model->setStringList(userNames);
 
         // Set the model to the QListView
