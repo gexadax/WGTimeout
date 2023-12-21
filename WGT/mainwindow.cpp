@@ -7,11 +7,29 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
+
+    // Path to the program directory
+    QString programDir = QCoreApplication::applicationDirPath();
+
+    // Full path to the settings.ini file
+    QString settingsFilePath = programDir + "/settings.ini";
+
+    // Check if the file exists
+    if (!QFile::exists(settingsFilePath)) {
+        // File does not exist, open the DialogSettings window
+        DialogSettings dialogSettings;
+        if (dialogSettings.exec() != QDialog::Accepted) {
+            // Canceled or closed, handle accordingly
+            this->close();
+            return;
+        }
+    }
+
+    // Connect to SSH
     QString hostname, username, password;
     int port;
     DialogSettings::loadSettings("settings.ini", hostname, username, password, port);
 
-    // Connect to SSH
     SSHConnector sshConnector;
     if (sshConnector.connectToSSH(hostname.toStdString(), username.toStdString(), password.toStdString(), port)) {
         // Connection successful
@@ -35,6 +53,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     } else {
         // Connection error
         std::cerr << "SSH Connection failed" << std::endl;
+        // Handle the failure if necessary
+        this->close();
+        return;
     }
 }
 
