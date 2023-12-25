@@ -86,8 +86,6 @@ void DialogSettings::executeSSHCommand(const std::string& command) {
     }
 }
 
-
-
 void DialogSettings::on_buttonBox_settings_accepted()
 {
     // Get values entered in the dialog
@@ -102,21 +100,4 @@ void DialogSettings::on_buttonBox_settings_accepted()
                  QString::fromStdString(username),
                  QString::fromStdString(password),
                  port);
-
-    // Connect using the entered data
-    SSHConnector sshConnector;
-    if (sshConnector.connectToSSH(hostname, username, password, port)) {
-        // Connection successful
-        std::cout << "SSH Connection successful" << std::endl;
-
-        // Perform SSH operations...
-
-        // Open the main window
-        MainWindow mainWindow;
-        mainWindow.show();
-        this->accept(); // Close the settings dialog
-    } else {
-        // Connection error
-        std::cerr << "SSH Connection failed" << std::endl;
-    }
 }

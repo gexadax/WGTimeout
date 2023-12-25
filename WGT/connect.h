@@ -28,4 +28,5 @@ private:
     struct sockaddr_in sin;
     LIBSSH2_SESSION* session;
 };
+
 #endif // CONNECT_H
