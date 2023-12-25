@@ -8,7 +8,7 @@ SSHConnector::SSHConnector() : sock(INVALID_SOCKET), session(nullptr) {
 }
 
 SSHConnector::~SSHConnector() {
-    // disconnectAndCleanup();
+    //disconnectAndCleanup();
 }
 
 bool SSHConnector::connectToSSH(const std::string& hostname,
@@ -78,30 +78,26 @@ LIBSSH2_SESSION* SSHConnector::getSession() {
 }
 
 std::string SSHConnector::executeCommand(const std::string& command) const {
-    if (!session) {
-        // Handle error: SSH session is not initialized
-        return "";
-    }
+    std::string result;
 
-    // Create a new channel
+    // Open a new channel
     LIBSSH2_CHANNEL* channel = libssh2_channel_open_session(session);
     if (!channel) {
-        // Handle error: Unable to open a channel
-        return "";
+        std::cerr << "Error: Unable to open a channel" << std::endl;
+        return result;
     }
 
     // Execute the command on the channel
     if (libssh2_channel_exec(channel, command.c_str()) != 0) {
-        // Handle error: Unable to execute the command
+        std::cerr << "Error: Unable to execute the command" << std::endl;
         libssh2_channel_free(channel);
-        return "";
+        return result;
     }
 
-    // Read the command output
-    std::string result;
     char buffer[1024];
     int bytesRead;
 
+    // Read the command output
     do {
         bytesRead = libssh2_channel_read(channel, buffer, sizeof(buffer));
         if (bytesRead > 0) {

@@ -1,4 +1,4 @@
-//settings.h
+// settings.h
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
@@ -8,10 +8,6 @@
 namespace Ui {
 class DialogSettings;
 }
-
-class MainWindow;
-
-void checkAndOpenSettingsDialog(MainWindow* mainWindow);
 
 class DialogSettings : public QDialog
 {
