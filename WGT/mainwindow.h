@@ -2,13 +2,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QStandardItemModel>
 #include <QStringListModel>
-#include <QStandardItem>
 #include <QMainWindow>
-#include <QFile>
-#include "connect.h"
 #include "users.h"
+#include <QFile>
 
 namespace Ui {
 class MainWindow;

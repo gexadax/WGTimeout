@@ -1,6 +1,5 @@
 // connect.cpp
 #include "connect.h"
-#include <qlogging.h>
 
 SSHConnector::SSHConnector() : sock(INVALID_SOCKET), session(nullptr) {
     // Initializing Winsock
@@ -95,8 +94,7 @@ std::string SSHConnector::executeCommand(const std::string& command) const {
     }
 
     char buffer[1024];
-    int bytesRead;
-
+    ssize_t bytesRead;
     // Read the command output
     do {
         bytesRead = libssh2_channel_read(channel, buffer, sizeof(buffer));

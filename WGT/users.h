@@ -2,8 +2,8 @@
 #ifndef USERS_H
 #define USERS_H
 
-#include "connect.h"
 #include <QStringList>
+#include "connect.h"
 
 class users
 {
