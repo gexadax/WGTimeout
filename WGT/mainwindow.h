@@ -21,6 +21,7 @@ public:
 private slots:
     void on_actionExit_triggered();
     void on_actionSettings_triggered();
+    void onListViewUserClicked(const QModelIndex &index);
 
 private:
     Ui::MainWindow *ui;

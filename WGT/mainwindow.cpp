@@ -11,6 +11,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     // Display user names in the listViewUsers widget
     displayUserNames(sshConnector);
+
+    connect(ui->listViewUsers, &QListView::clicked, this, &MainWindow::onListViewUserClicked);
+
 }
 
 void MainWindow::displayUserNames(const SSHConnector& sshConnector) {
@@ -86,4 +89,13 @@ SSHConnector MainWindow::checkAndOpenSettingsDialog() {
     }
 
     return sshConnector;  // Return the SSHConnector instance
+}
+
+void MainWindow::onListViewUserClicked(const QModelIndex &index)
+{
+    // Get the selected username from the clicked item
+    QString selectedUsername = index.data(Qt::DisplayRole).toString();
+
+    // Update the lineEditAddUser with the selected username
+    ui->lineEditAddUser->setText(selectedUsername);
 }
