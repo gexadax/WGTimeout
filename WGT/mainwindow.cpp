@@ -98,4 +98,7 @@ void MainWindow::onListViewUserClicked(const QModelIndex &index)
 
     // Update the lineEditAddUser with the selected username
     ui->lineEditAddUser->setText(selectedUsername);
+
+    // Call the function to get remaining days and update the spinBoxLimitDays
+    users::displayOfRemainingDays(sshConnector, selectedUsername, ui->spinBoxLimitDays);
 }

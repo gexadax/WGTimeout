@@ -26,6 +26,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QString sshCommandResult;
+    SSHConnector sshConnector;
     void displayUserNames(const SSHConnector& sshConnector);
     SSHConnector checkAndOpenSettingsDialog();
 };
