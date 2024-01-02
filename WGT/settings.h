@@ -32,6 +32,7 @@ private slots:
 private:
     Ui::DialogSettings *ui;
     SSHConnector sshConnector;
+    static const int BUFFER_SIZE = 1024;
 };
 
 #endif // SETTINGS_H

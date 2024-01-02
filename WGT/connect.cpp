@@ -1,5 +1,6 @@
 // connect.cpp
 #include "connect.h"
+#include <libssh2.h>
 
 SSHConnector::SSHConnector() : sock(INVALID_SOCKET), session(nullptr) {
     // Initializing Winsock
@@ -82,20 +83,21 @@ std::string SSHConnector::executeCommand(const std::string& command) const {
     // Open a new channel
     LIBSSH2_CHANNEL* channel = libssh2_channel_open_session(session);
     if (!channel) {
+        int error_code = libssh2_session_last_error(session, nullptr, 0, 0);
         std::cerr << "Error: Unable to open a channel" << std::endl;
+        std::cerr << "libssh2_channel_open_session error: " << error_code << std::endl;
         return result;
     }
 
-    // Execute the command on the channel
     if (libssh2_channel_exec(channel, command.c_str()) != 0) {
         std::cerr << "Error: Unable to execute the command" << std::endl;
+        std::cerr << "libssh2_channel_exec error: " << libssh2_session_last_error(session, nullptr, 0, 0) << std::endl;
         libssh2_channel_free(channel);
         return result;
     }
 
     char buffer[1024];
     ssize_t bytesRead;
-    // Read the command output
     do {
         bytesRead = libssh2_channel_read(channel, buffer, sizeof(buffer));
         if (bytesRead > 0) {
@@ -104,7 +106,13 @@ std::string SSHConnector::executeCommand(const std::string& command) const {
     } while (bytesRead > 0);
 
     // Close the channel
+    if (libssh2_channel_close(channel) != 0) {
+        std::cerr << "Error: Unable to close the channel" << std::endl;
+        std::cerr << "libssh2_channel_close error: " << libssh2_session_last_error(session, nullptr, 0, 0) << std::endl;
+    }
+
     libssh2_channel_free(channel);
 
     return result;
+
 }

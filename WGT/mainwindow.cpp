@@ -7,16 +7,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->setupUi(this);
 
     // Connect to SSH and load settings
-    SSHConnector sshConnector = checkAndOpenSettingsDialog();  // Receive the SSHConnector instance
+    sshConnector = checkAndOpenSettingsDialog();  // Use the member variable
 
     // Display user names in the listViewUsers widget
-    displayUserNames(sshConnector);
+    displayUserNames();
 
     connect(ui->listViewUsers, &QListView::clicked, this, &MainWindow::onListViewUserClicked);
-
 }
 
-void MainWindow::displayUserNames(const SSHConnector& sshConnector) {
+void MainWindow::displayUserNames() {
     // Get the list of user names using the getUserNames function
     QStringList userNames = users::getUserNames(sshConnector);
 
@@ -73,7 +72,10 @@ SSHConnector MainWindow::checkAndOpenSettingsDialog() {
 
     // Connect to SSH using the loaded settings
     SSHConnector sshConnector;
-    if (sshConnector.connectToSSH(hostname.toStdString(), username.toStdString(), password.toStdString(), port)) {
+    if (sshConnector.connectToSSH(hostname.toStdString(),
+                                  username.toStdString(),
+                                  password.toStdString(),
+                                  port)) {
         // Connection successful
         std::cout << "SSH Connection successful" << std::endl;
 
@@ -91,8 +93,7 @@ SSHConnector MainWindow::checkAndOpenSettingsDialog() {
     return sshConnector;  // Return the SSHConnector instance
 }
 
-void MainWindow::onListViewUserClicked(const QModelIndex &index)
-{
+void MainWindow::onListViewUserClicked(const QModelIndex &index) {
     // Get the selected username from the clicked item
     QString selectedUsername = index.data(Qt::DisplayRole).toString();
 

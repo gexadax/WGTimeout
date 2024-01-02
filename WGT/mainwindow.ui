@@ -47,7 +47,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Limit days:</string>
+     <string>Days limit:</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEditAddUser">

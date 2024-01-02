@@ -27,7 +27,7 @@ private:
     Ui::MainWindow *ui;
     QString sshCommandResult;
     SSHConnector sshConnector;
-    void displayUserNames(const SSHConnector& sshConnector);
+    void displayUserNames();
     SSHConnector checkAndOpenSettingsDialog();
 };
 

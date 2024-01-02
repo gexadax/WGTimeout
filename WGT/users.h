@@ -10,8 +10,9 @@ class users
 {
 public:
     static QStringList getUserNames(const SSHConnector& sshConnector);
-    static void displayOfRemainingDays(const SSHConnector& sshConnector, const QString& username, QSpinBox* spinBox);
-
+    static void displayOfRemainingDays(const SSHConnector& sshConnector,
+                                       const QString& username,
+                                       QSpinBox* spinBox);
 };
 
 #endif // USERS_H

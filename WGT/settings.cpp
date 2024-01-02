@@ -3,7 +3,11 @@
 #include "settings.h"
 #include <QSettings>
 
-void saveSettings(const QString& filePath, const QString& hostname, const QString& username, const QString& password, int port) {
+void saveSettings(const QString& filePath,
+                  const QString& hostname,
+                  const QString& username,
+                  const QString& password,
+                  int port) {
     QSettings settings(filePath, QSettings::IniFormat);
     settings.setValue("hostname", hostname);
     settings.setValue("username", username);
@@ -11,7 +15,11 @@ void saveSettings(const QString& filePath, const QString& hostname, const QStrin
     settings.setValue("port", port);
 }
 
-void DialogSettings::loadSettings(const QString& filePath, QString& hostname, QString& username, QString& password, int& port) {
+void DialogSettings::loadSettings(const QString& filePath,
+                                  QString& hostname,
+                                  QString& username,
+                                  QString& password,
+                                  int& port) {
     QSettings settings(filePath, QSettings::IniFormat);
     hostname = settings.value("hostname").toString();
     username = settings.value("username").toString();
@@ -62,7 +70,7 @@ void DialogSettings::executeSSHCommand(const std::string& command) {
     if (channel) {
         if (libssh2_channel_exec(channel, command.c_str()) == 0) {
             // Waiting for command execution to complete
-            char buffer[4096];
+            char buffer[BUFFER_SIZE];
             int nbytes;
             do {
                 nbytes = libssh2_channel_read(channel, buffer, sizeof(buffer));
