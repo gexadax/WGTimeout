@@ -21,13 +21,14 @@ public:
 private slots:
     void on_actionExit_triggered();
     void on_actionSettings_triggered();
+    void on_pushButtonAddUser_clicked();
     void onListViewUserClicked(const QModelIndex &index);
 
 private:
     Ui::MainWindow *ui;
+    void displayUserNames();
     QString sshCommandResult;
     SSHConnector sshConnector;
-    void displayUserNames();
     SSHConnector checkAndOpenSettingsDialog();
 };
 

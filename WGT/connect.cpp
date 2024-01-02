@@ -114,5 +114,4 @@ std::string SSHConnector::executeCommand(const std::string& command) const {
     libssh2_channel_free(channel);
 
     return result;
-
 }

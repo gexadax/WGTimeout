@@ -27,6 +27,11 @@ void DialogSettings::loadSettings(const QString& filePath,
     port = settings.value("port").toInt();
 }
 
+QString DialogSettings::getPasswordFromSettings() {
+    QSettings settings("settings.ini", QSettings::IniFormat);
+    return settings.value("password").toString();
+}
+
 DialogSettings::DialogSettings(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DialogSettings)

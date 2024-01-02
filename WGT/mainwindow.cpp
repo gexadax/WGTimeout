@@ -103,3 +103,26 @@ void MainWindow::onListViewUserClicked(const QModelIndex &index) {
     // Call the function to get remaining days and update the spinBoxLimitDays
     users::displayOfRemainingDays(sshConnector, selectedUsername, ui->spinBoxLimitDays);
 }
+
+void MainWindow::on_pushButtonAddUser_clicked() {
+    // Get the username from lineEditAddUser
+    QString username = ui->lineEditAddUser->text().trimmed();
+
+    // Get the password from settings
+    QString password = DialogSettings::getPasswordFromSettings();
+
+    // Optionally, get the value from spinBoxLimitDays
+    QString limitDays = QString::number(ui->spinBoxLimitDays->value()); // Convert int to QString
+
+    // Execute the crontab command with the updated createCronTask signature
+    users::createCronTask(sshConnector, username, limitDays);
+
+    // Execute the pivpn command
+    users::createPiVPNUser(sshConnector, username, password);
+
+    // Optionally, update the usernames in the listViewUsers widget
+    displayUserNames();
+
+    // Optionally, update spinBoxLimitDays for the added user
+    users::displayOfRemainingDays(sshConnector, username, ui->spinBoxLimitDays);
+}
