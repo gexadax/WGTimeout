@@ -130,5 +130,5 @@ void MainWindow::on_pushButtonAddUser_clicked() {
     users::generateQRCode(sshConnector, username);
 
     // Assuming sshConnector is an instance of your SSHConnector class
-    users::moveFileFromServerToLocal("/path/to/user5_config.png", sshConnector);
+    users::moveFileFromServerToLocal(sshConnector, username);
 }

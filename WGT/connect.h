@@ -20,7 +20,7 @@ public:
                       int port = 22);
     void disconnectToSSH();
     void disconnectAndCleanup();
-    LIBSSH2_SESSION* getSession();
+    LIBSSH2_SESSION* getSession() const;
     std::string executeCommand(const std::string& command) const;
 private:
     SOCKET sock;

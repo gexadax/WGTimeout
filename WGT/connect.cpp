@@ -73,7 +73,7 @@ void SSHConnector::disconnectAndCleanup() {
     WSACleanup();
 }
 
-LIBSSH2_SESSION* SSHConnector::getSession() {
+LIBSSH2_SESSION* SSHConnector::getSession() const {
     return session;
 }
 

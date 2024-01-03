@@ -16,7 +16,10 @@ void users::displayOfRemainingDays(const SSHConnector& sshConnector,
                                    const QString& username,
                                    QSpinBox* spinBox) {
     // Execute the command remotely
-    std::string command = "echo $(($(crontab -l | grep " + username.toStdString() + " | grep -oP '\\*/\\K\\d+') - ((($(date +%s) - $(crontab -l | grep " + username.toStdString() + " | awk -F'#' '{print $2}' | tr -d ' ')) / 60))))";
+    std::string command = "echo $(($(crontab -l | grep " + username.toStdString() +
+                          " | grep -oP '\\*/\\K\\d+') - ((($(date +%s) - $(crontab -l | grep "
+                          + username.toStdString() +
+                          " | awk -F'#' '{print $2}' | tr -d ' ')) / 60))))";
     std::string result = sshConnector.executeCommand(command);
 
     // Process the result and update the spinBoxLimitDays
@@ -55,19 +58,25 @@ void users::generateQRCode(const SSHConnector& sshConnector, const QString& user
     std::string result = sshConnector.executeCommand(command);
 }
 
-void users::moveFileFromServerToLocal(const std::string& remoteFilePath, const SSHConnector& sshConnector) {
-    // Construct the command to move the file
-    std::string command = "mv " + remoteFilePath + " ~/configs/user5_config.png";
+void users::moveFileFromServerToLocal(const SSHConnector& sshConnector, const QString& username) {
+    // Construct source path
+    std::string sourcePath = "~/configs/" + username.toStdString() + "_config.png";
 
-    // Execute the command remotely
-    std::string result = sshConnector.executeCommand(command);
+    // Download the file and write the content to the local file
+    std::string downloadCommand = "cat " + sourcePath;
+    std::string result = sshConnector.executeCommand(downloadCommand);
 
-    // Check for errors in the result
-    if (result.empty()) {
-        // Success
-        std::cout << "File moved successfully." << std::endl;
+    // Write the content to the local file
+    QFile localFile(QCoreApplication::applicationDirPath() + "/" + username + "_config.png");
+    if (localFile.open(QIODevice::WriteOnly)) {
+        localFile.write(result.c_str(), result.size());
+        localFile.close();
+        std::cout << "File moved successfully to local directory." << std::endl;
+
+        // Remove the file from the remote server
+        std::string removeCommand = "rm " + sourcePath;
+        sshConnector.executeCommand(removeCommand);
     } else {
-        // Print the error message
-        std::cerr << "Error moving file: " << result << std::endl;
+        std::cerr << "Error moving the file to local directory." << std::endl;
     }
 }

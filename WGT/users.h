@@ -5,6 +5,8 @@
 
 #include <QStringList>
 #include <QSpinBox>
+#include <QFile>
+#include <QCoreApplication>
 #include "connect.h"
 
 class users
@@ -22,9 +24,8 @@ public:
                                        QSpinBox* spinBox);
     static void generateQRCode(const SSHConnector& sshConnector,
                                const QString& username);
-    static void moveFileFromServerToLocal(const std::string& remoteFilePath,
-                                          const SSHConnector& sshConnector);
-
+    static void moveFileFromServerToLocal(const SSHConnector& sshConnector,
+                                          const QString& username);
 };
 
 #endif // USERS_H
