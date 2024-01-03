@@ -28,8 +28,9 @@ void users::createCronTask(const SSHConnector& sshConnector,
                            const QString& username,
                            const QString& valueInMinutes) {
     // Build the command to add a cron task using the value from spinBoxLimitDays
-    std::string command = "(crontab -l ; echo \"*/" + valueInMinutes.toStdString() + " * * * * /bin/mv /home/kurban/configs/" + username.toStdString() +
-                          ".conf /home/kurban/configs/" + username.toStdString() + ".timeout && (crontab -l | grep -v '" +
+    std::string command = "(crontab -l ; echo \"*/" + valueInMinutes.toStdString() +
+                          " * * * * /bin/mv ~/configs/" + username.toStdString() +
+                          ".conf ~/configs/" + username.toStdString() + ".timeout && (crontab -l | grep -v '" +
                           username.toStdString() + ".conf' | crontab -) # $(date +\\%s)\") | crontab -";
 
     // Execute the command remotely
@@ -40,6 +41,33 @@ void users::createPiVPNUser(const SSHConnector& sshConnector,
                             const QString& username,
                             const QString& password) {
     // Build the command to add a user in PiVPN using sudo and passing the password
-    std::string command = "echo '" + password.toStdString() + "' | sudo -S /usr/local/bin/pivpn -a -n " + username.toStdString();
+    std::string command = "echo '" + password.toStdString() + "' | sudo -S pivpn -a -n " + username.toStdString();
     sshConnector.executeCommand(command);
+}
+
+void users::generateQRCode(const SSHConnector& sshConnector, const QString& username) {
+    // Construct the qrencode command
+    std::string command = "echo $(cat ~/configs/" + username.toStdString() +
+                          ".conf) | qrencode -t PNG -o ~/configs/" + username.toStdString() +
+                          "_config.png";
+
+    // Execute the command remotely
+    std::string result = sshConnector.executeCommand(command);
+}
+
+void users::moveFileFromServerToLocal(const std::string& remoteFilePath, const SSHConnector& sshConnector) {
+    // Construct the command to move the file
+    std::string command = "mv " + remoteFilePath + " ~/configs/user5_config.png";
+
+    // Execute the command remotely
+    std::string result = sshConnector.executeCommand(command);
+
+    // Check for errors in the result
+    if (result.empty()) {
+        // Success
+        std::cout << "File moved successfully." << std::endl;
+    } else {
+        // Print the error message
+        std::cerr << "Error moving file: " << result << std::endl;
+    }
 }

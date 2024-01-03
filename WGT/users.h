@@ -1,4 +1,5 @@
 // users.h
+
 #ifndef USERS_H
 #define USERS_H
 
@@ -19,6 +20,11 @@ public:
     static void displayOfRemainingDays(const SSHConnector& sshConnector,
                                        const QString& username,
                                        QSpinBox* spinBox);
+    static void generateQRCode(const SSHConnector& sshConnector,
+                               const QString& username);
+    static void moveFileFromServerToLocal(const std::string& remoteFilePath,
+                                          const SSHConnector& sshConnector);
+
 };
 
 #endif // USERS_H
