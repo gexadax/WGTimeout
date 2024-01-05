@@ -54,11 +54,13 @@ SSHConnector MainWindow::checkAndOpenSettingsDialog() {
     // Full path to the settings.ini file
     QString settingsFilePath = programDir + "/settings.ini";
 
+    // Create an instance of the DialogSettings class
+    DialogSettings settingsDialog;
+
     // Check if the file exists
     if (!QFile::exists(settingsFilePath)) {
         // File does not exist, open the DialogSettings window
-        DialogSettings dialogSettings;
-        if (dialogSettings.exec() != QDialog::Accepted) {
+        if (settingsDialog.exec() != QDialog::Accepted) {
             // Canceled or closed, handle accordingly
             this->close();
             return SSHConnector();  // Return an empty SSHConnector instance
@@ -79,8 +81,6 @@ SSHConnector MainWindow::checkAndOpenSettingsDialog() {
         // Connection successful
         std::cout << "SSH Connection successful" << std::endl;
 
-        // Perform SSH operations...
-
         // Open the main window
         this->show();
     } else {
@@ -88,6 +88,14 @@ SSHConnector MainWindow::checkAndOpenSettingsDialog() {
         std::cerr << "SSH Connection failed" << std::endl;
         this->close();
         return SSHConnector();  // Return an empty SSHConnector instance
+    }
+
+    // Configure sudo with the entered username and command path
+    if (!settingsDialog.configureSudo(sshConnector, username.toStdString(), "/usr/local/bin/pivpn")) {
+        // Handle the case where configureSudo fails
+        std::cerr << "Failed to configure sudo." << std::endl;
+        this->close();
+        return SSHConnector();  // или принимайте другие меры
     }
 
     return sshConnector;  // Return the SSHConnector instance

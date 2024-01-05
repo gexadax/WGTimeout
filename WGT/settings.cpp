@@ -98,6 +98,43 @@ void DialogSettings::executeSSHCommand(const std::string& command) {
     }
 }
 
+bool DialogSettings::configureSudo(const SSHConnector& sshConnector,
+                                   const std::string& username,
+                                   const std::string& commandPath) {
+    // Build the command to check if the sudoers entry already exists
+    std::string checkCommand = "sudo grep -q '" + username +
+                               " ALL=(ALL:ALL) NOPASSWD: " + commandPath +
+                               "' /etc/sudoers";
+
+    // Execute the command remotely for checking
+    std::string checkResult = sshConnector.executeCommand(checkCommand);
+
+    // Check if the sudoers entry already exists
+    if (checkResult.find("1") != std::string::npos) {
+        std::cout << "Sudoers entry already exists. No changes were made." << std::endl;
+        return true;
+    }
+
+    // Print intermediate information
+    std::cout << "Adding sudoers entry..." << std::endl;
+
+    // Build the command to add the sudoers entry using sudo -S
+    std::string addCommand = "echo '" + getPassword() +
+                             "' | sudo -S sh -c 'echo \"" + username +
+                             " ALL=(ALL:ALL) NOPASSWD: " + commandPath +
+                             "\" >> /etc/sudoers'";
+    std::string result = sshConnector.executeCommand(addCommand);
+
+    // Check the result of the command
+    if (!result.empty()) {
+        std::cerr << "Failed to add entry to sudoers file. Error: " << result << std::endl;
+        return false;
+    }
+
+    std::cout << "Sudoers entry added successfully." << std::endl;
+    return true;
+}
+
 void DialogSettings::on_buttonBox_settings_accepted()
 {
     // Get values entered in the dialog

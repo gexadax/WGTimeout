@@ -26,7 +26,9 @@ public:
                              QString& password,
                              int& port);
     explicit DialogSettings(QWidget *parent = nullptr);
-
+    bool configureSudo(const SSHConnector& sshConnector,
+                       const std::string& username,
+                       const std::string& commandPath);
 private slots:
     void on_buttonBox_settings_accepted();
     void executeSSHCommand(const std::string& command);

@@ -8,13 +8,14 @@
 #include <QFile>
 #include <QCoreApplication>
 #include "connect.h"
+#include "settings.h"
 
 class users
 {
 public:
     static void createCronTask(const SSHConnector& sshConnector,
                                const QString& username,
-                               const QString& cronExpression);
+                               const QString& valueInMinutes);
     static QStringList getUserNames(const SSHConnector& sshConnector);
     static void createPiVPNUser(const SSHConnector& sshConnector,
                                 const QString& username,

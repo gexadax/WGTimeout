@@ -33,9 +33,10 @@ void users::createCronTask(const SSHConnector& sshConnector,
     // Build the command to add a cron task using the value from spinBoxLimitDays
     std::string command = "(crontab -l ; echo \"*/" + valueInMinutes.toStdString() +
                           " * * * * /bin/mv ~/configs/" + username.toStdString() +
-                          ".conf ~/configs/" + username.toStdString() + ".timeout && (crontab -l | grep -v '" +
-                          username.toStdString() + ".conf' | crontab -) # $(date +\\%s)\") | crontab -";
-
+                          ".conf ~/configs/" + username.toStdString() + ".timeout && " +
+                          "(crontab -l | grep -v '" + username.toStdString() +
+                          ".conf' | crontab -) && sudo -S pivpn -off -y " + username.toStdString() +
+                          " # $(date +\\%s)\") | crontab -";
     // Execute the command remotely
     sshConnector.executeCommand(command);
 }
@@ -44,7 +45,8 @@ void users::createPiVPNUser(const SSHConnector& sshConnector,
                             const QString& username,
                             const QString& password) {
     // Build the command to add a user in PiVPN using sudo and passing the password
-    std::string command = "echo '" + password.toStdString() + "' | sudo -S pivpn -a -n " + username.toStdString();
+    std::string command = "echo '" + password.toStdString() +
+                          "' | sudo -S pivpn -a -n " + username.toStdString();
     sshConnector.executeCommand(command);
 }
 
