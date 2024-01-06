@@ -140,3 +140,26 @@ void MainWindow::on_pushButtonAddUser_clicked() {
     // Assuming sshConnector is an instance of your SSHConnector class
     users::moveFileFromServerToLocal(sshConnector, username);
 }
+
+void MainWindow::on_pushButtonDeleteUser_clicked()
+{
+    // Get the username from lineEditAddUser
+    QString username = ui->lineEditAddUser->text().trimmed();
+
+    // Build the command to remove the PiVPN user, associated configurations, and crontab entries
+    std::string deleteCommand = "crontab -l | grep -v '" + username.toStdString() + "' | crontab - && "
+                                "rm ~/configs/" + username.toStdString() + ".* && "
+                                "sudo -S pivpn -r -y " + username.toStdString();
+
+
+    // Execute the combined command remotely
+    sshConnector.executeCommand(deleteCommand);
+
+    // Optionally, update the usernames in the listViewUsers widget
+    displayUserNames();
+
+    // Optionally, update spinBoxLimitDays for the added user
+    users::displayOfRemainingDays(sshConnector, username, ui->spinBoxLimitDays);
+
+    std::cout << "User '" << username.toStdString() << "' deleted successfully." << std::endl;
+}

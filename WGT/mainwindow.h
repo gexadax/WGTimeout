@@ -24,6 +24,8 @@ private slots:
     void on_pushButtonAddUser_clicked();
     void onListViewUserClicked(const QModelIndex &index);
 
+    void on_pushButtonDeleteUser_clicked();
+
 private:
     Ui::MainWindow *ui;
     void displayUserNames();
