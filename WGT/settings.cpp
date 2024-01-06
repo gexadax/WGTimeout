@@ -102,15 +102,16 @@ bool DialogSettings::configureSudo(const SSHConnector& sshConnector,
                                    const std::string& username,
                                    const std::string& commandPath) {
     // Build the command to check if the sudoers entry already exists
-    std::string checkCommand = "sudo grep -q '" + username +
-                               " ALL=(ALL:ALL) NOPASSWD: " + commandPath +
-                               "' /etc/sudoers";
+    std::string checkCommand = "echo '" + getPassword() +
+                               "' | sudo -S cat /etc/sudoers | grep '" +
+                               username + " ALL=(ALL:ALL) NOPASSWD: " +
+                               commandPath + "'";
 
     // Execute the command remotely for checking
     std::string checkResult = sshConnector.executeCommand(checkCommand);
 
     // Check if the sudoers entry already exists
-    if (checkResult.find("1") != std::string::npos) {
+    if (!checkResult.empty()) {
         std::cout << "Sudoers entry already exists. No changes were made." << std::endl;
         return true;
     }

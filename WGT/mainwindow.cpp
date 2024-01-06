@@ -95,7 +95,7 @@ SSHConnector MainWindow::checkAndOpenSettingsDialog() {
         // Handle the case where configureSudo fails
         std::cerr << "Failed to configure sudo." << std::endl;
         this->close();
-        return SSHConnector();  // или принимайте другие меры
+        return SSHConnector();
     }
 
     return sshConnector;  // Return the SSHConnector instance
