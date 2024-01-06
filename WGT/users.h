@@ -27,6 +27,8 @@ public:
                                const QString& username);
     static void moveFileFromServerToLocal(const SSHConnector& sshConnector,
                                           const QString& username);
+    static void deleteUser(const SSHConnector& sshConnector,
+                           const QString& username);
 };
 
 #endif // USERS_H

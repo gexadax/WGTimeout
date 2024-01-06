@@ -1,6 +1,22 @@
 // users.cpp
 #include "users.h"
 
+void users::deleteUser(const SSHConnector& sshConnector, const QString& username) {
+    // Build the command to remove the PiVPN user, associated configurations, and crontab entries
+    std::string deleteCommand = "crontab -l | grep -v '" + username.toStdString() + "' | crontab - && "
+                                "rm ~/configs/" + username.toStdString() + ".* && "
+                                "sudo -S pivpn -r -y " + username.toStdString();
+
+    // Execute the combined command remotely
+    sshConnector.executeCommand(deleteCommand);
+
+    // Delete the QR code file from the local directory
+    std::string localQRCodePath = QCoreApplication::applicationDirPath().toStdString() + "/" + username.toStdString() + "_config.png";
+    std::remove(localQRCodePath.c_str());
+
+    std::cout << "User '" << username.toStdString() << "' deleted successfully." << std::endl;
+}
+
 QStringList users::getUserNames(const SSHConnector& sshConnector) {
     // Execute the command remotely
     std::string command = "ls configs | awk '{print $1}' | xargs -I {} basename {} .conf";
