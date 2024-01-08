@@ -98,3 +98,29 @@ void users::moveFileFromServerToLocal(const SSHConnector& sshConnector, const QS
         std::cerr << "Error moving the file to local directory." << std::endl;
     }
 }
+
+void users::activateUser(const SSHConnector& sshConnector,
+                         const QString& username,
+                         const QString& valueInMinutes) {
+    // Build the command to rename the timeout file to conf file
+    std::string renameCommand = "mv ~/configs/" + username.toStdString() +
+                                ".timeout ~/configs/" + username.toStdString() + ".conf";
+    sshConnector.executeCommand(renameCommand);
+
+    // Build the command to add a cron task using the value from spinBoxLimitDays
+    std::string command = "(crontab -l ; echo \"*/" + valueInMinutes.toStdString() +
+                          " * * * * /bin/mv ~/configs/" + username.toStdString() +
+                          ".conf ~/configs/" + username.toStdString() + ".timeout && " +
+                          "(crontab -l | grep -v '" + username.toStdString() +
+                          ".conf' | crontab -) && sudo -S pivpn -off -y " + username.toStdString() +
+                          " # $(date +\\%s)\") | crontab -";
+    // Execute the command remotely
+    sshConnector.executeCommand(command);
+
+    // Build the command to activate the user in PiVPN
+    std::string activateCommand = "sudo -S pivpn -on -y " + username.toStdString();
+    sshConnector.executeCommand(activateCommand);
+
+    std::cout << "User '" << username.toStdString() << "' activated successfully." << std::endl;
+}
+

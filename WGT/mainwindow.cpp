@@ -155,3 +155,26 @@ void MainWindow::on_pushButtonDeleteUser_clicked()
     // Optionally, update spinBoxLimitDays for the added user
     users::displayOfRemainingDays(sshConnector, username, ui->spinBoxLimitDays);
 }
+
+void MainWindow::on_pushButtonActivateUser_clicked() {
+    // Get the username from lineEditAddUser
+    QString username = ui->lineEditAddUser->text().trimmed();
+
+    // Optionally, get the value from spinBoxLimitDays
+    QString limitDays = QString::number(ui->spinBoxLimitDays->value()); // Convert int to QString
+
+    // Activate the user
+    users::activateUser(sshConnector, username, limitDays);
+
+    // Optionally, update the usernames in the listViewUsers widget
+    displayUserNames();
+
+    // Optionally, update spinBoxLimitDays for the added user
+    users::displayOfRemainingDays(sshConnector, username, ui->spinBoxLimitDays);
+
+    // Generate QR code
+    users::generateQRCode(sshConnector, username);
+
+    // Assuming sshConnector is an instance of your SSHConnector class
+    users::moveFileFromServerToLocal(sshConnector, username);
+}

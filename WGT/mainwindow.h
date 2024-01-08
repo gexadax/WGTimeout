@@ -26,6 +26,8 @@ private slots:
 
     void on_pushButtonDeleteUser_clicked();
 
+    void on_pushButtonActivateUser_clicked();
+
 private:
     Ui::MainWindow *ui;
     void displayUserNames();

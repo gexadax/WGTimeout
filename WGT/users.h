@@ -20,6 +20,9 @@ public:
     static void createPiVPNUser(const SSHConnector& sshConnector,
                                 const QString& username,
                                 const QString& password);
+    static void activateUser(const SSHConnector& sshConnector,
+                                const QString& username,
+                                const QString& password);
     static void displayOfRemainingDays(const SSHConnector& sshConnector,
                                        const QString& username,
                                        QSpinBox* spinBox);
