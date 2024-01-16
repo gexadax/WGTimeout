@@ -14,18 +14,26 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 include_directories(C:/Qt_Projects/WGTimeout)
 link_directories(C:/Qt_Projects/WGTimeout)
 
+# Add the paths to the static libraries
+set(LIB_DIR "C:/Qt_Projects/WGTimeout")
+set(LIBS
+    ${LIB_DIR}/libcrypto.lib
+    ${LIB_DIR}/libssh2.lib
+    ${LIB_DIR}/zlib.lib
+)
+
 set(PROJECT_SOURCES
-        main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
-        settings.cpp
-        settings.h
-        settings.ui
-        connect.cpp
-        connect.h
-        users.h
-        users.cpp
+    main.cpp
+    mainwindow.cpp
+    mainwindow.h
+    mainwindow.ui
+    settings.cpp
+    settings.h
+    settings.ui
+    connect.cpp
+    connect.h
+    users.h
+    users.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -33,17 +41,11 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
     )
-# Define target properties for Android with Qt 6 as:
-#    set_property(TARGET WGT APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
-#                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
-# For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
 else()
     if(ANDROID)
         add_library(wgt SHARED
             ${PROJECT_SOURCES}
         )
-# Define properties for Android with Qt 5 after find_package() calls as:
-#    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
     else()
         add_executable(wgt
             ${PROJECT_SOURCES}
@@ -62,14 +64,11 @@ else()
     endif()
 endif()
 
-target_link_libraries(wgt PRIVATE Qt${QT_VERSION_MAJOR}::Widgets libssh2)
+# Link against the static libraries
+target_link_libraries(wgt PRIVATE Qt${QT_VERSION_MAJOR}::Widgets ${LIBS} Crypt32.lib)
 
-# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
-# If you are developing for iOS or macOS you should consider setting an
-# explicit, fixed bundle identifier manually though.
-if(${QT_VERSION} VERSION_LESS 6.1.0)
-  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.WGT)
-endif()
+
+# Set target properties
 set_target_properties(wgt PROPERTIES
     ${BUNDLE_ID_OPTION}
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}

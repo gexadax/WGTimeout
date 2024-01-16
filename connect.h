@@ -3,7 +3,7 @@
 #define CONNECT_H
 
 #include <ws2tcpip.h>
-#include <libssh2.h>
+#include "libssh2.h"
 #include <iostream>
 
 // Connecting the ws2_32.lib library
