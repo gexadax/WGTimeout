@@ -2,7 +2,7 @@
 #include "mainwindow.h"
 #include "settings.h"
 
-#include <QApplication>
+#include "QApplication"
 
 int main(int argc, char *argv[])
 {

@@ -3,7 +3,7 @@
 #define SETTINGS_H
 
 #include "connect.h"
-#include <QDialog>
+#include "QDialog"
 
 namespace Ui {
 class DialogSettings;

@@ -1,7 +1,7 @@
 // settings.cpp
 #include "ui_settings.h"
 #include "settings.h"
-#include <QSettings>
+#include "QSettings"
 
 void saveSettings(const QString& filePath,
                   const QString& hostname,

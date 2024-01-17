@@ -3,10 +3,10 @@
 #ifndef USERS_H
 #define USERS_H
 
-#include <QStringList>
-#include <QSpinBox>
-#include <QFile>
-#include <QCoreApplication>
+#include "QStringList"
+#include "QSpinBox"
+#include "QFile"
+#include "QCoreApplication"
 #include "connect.h"
 #include "settings.h"
 

@@ -9,13 +9,24 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
-include_directories(C:/Qt_Projects/WGTimeout)
-link_directories(C:/Qt_Projects/WGTimeout)
+if(MSVC)
+    # Static linking with the C++ Runtime library for release
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+    # Static linking with the C++ Runtime library for debug
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
 
-# Add the paths to the static libraries
-set(LIB_DIR "C:/Qt_Projects/WGTimeout")
+    # Exclude flags set by default in CMake
+    string(REPLACE "/MDd" "" CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
+    string(REPLACE "/MD" "" CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
+endif()
+
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets Core REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Core REQUIRED)
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/WGTimeout)
+link_directories(${CMAKE_CURRENT_SOURCE_DIR}/WGTimeout)
+
+set(LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/)
 set(LIBS
     ${LIB_DIR}/libcrypto.lib
     ${LIB_DIR}/libssh2.lib
@@ -49,28 +60,19 @@ else()
     else()
         add_executable(wgt
             ${PROJECT_SOURCES}
-            main.cpp
-            mainwindow.cpp
-            mainwindow.h
-            mainwindow.ui
-            settings.cpp
-            settings.h
-            settings.ui
-            connect.cpp
-            connect.h
-            users.h
-            users.cpp
         )
     endif()
 endif()
 
-# Link against the static libraries
-target_link_libraries(wgt PRIVATE Qt${QT_VERSION_MAJOR}::Widgets ${LIBS} Crypt32.lib)
+target_link_libraries(wgt PRIVATE Qt5::Widgets Qt5::Core ${LIBS} Crypt32.lib)
 
+target_include_directories(wgt PRIVATE
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/WGTimeout
+)
 
-# Set target properties
 set_target_properties(wgt PROPERTIES
-    ${BUNDLE_ID_OPTION}
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     MACOSX_BUNDLE TRUE
