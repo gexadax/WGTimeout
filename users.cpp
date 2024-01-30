@@ -1,23 +1,30 @@
 // users.cpp
 #include "users.h"
 
-void users::deleteUser(const SSHConnector& sshConnector, const QString& username) {
+void users::deleteUser(const SSHConnector &sshConnector, const QString &username)
+{
     // Build the command to remove the PiVPN user, associated configurations, and crontab entries
-    std::string deleteCommand = "crontab -l | grep -v '" + username.toStdString() + "' | crontab - && "
-                                "rm ~/configs/" + username.toStdString() + ".* && "
-                                "sudo -S pivpn -r -y " + username.toStdString();
+    std::string deleteCommand = "crontab -l | grep -v '" + username.toStdString()
+                                + "' | crontab - && "
+                                  "rm ~/configs/"
+                                + username.toStdString()
+                                + ".* && "
+                                  "sudo -S pivpn -r -y "
+                                + username.toStdString();
 
     // Execute the combined command remotely
     sshConnector.executeCommand(deleteCommand);
 
     // Delete the QR code file from the local directory
-    std::string localQRCodePath = QCoreApplication::applicationDirPath().toStdString() + "/" + username.toStdString() + "_config.png";
+    std::string localQRCodePath = QCoreApplication::applicationDirPath().toStdString() + "/"
+                                  + username.toStdString() + "_config.png";
     std::remove(localQRCodePath.c_str());
 
     std::cout << "User '" << username.toStdString() << "' deleted successfully." << std::endl;
 }
 
-QStringList users::getUserNames(const SSHConnector& sshConnector) {
+QStringList users::getUserNames(const SSHConnector &sshConnector)
+{
     // Execute the command remotely
     std::string command = "ls configs | awk '{print $1}' | xargs -I {} basename {} .conf";
     std::string result = sshConnector.executeCommand(command);
@@ -28,14 +35,15 @@ QStringList users::getUserNames(const SSHConnector& sshConnector) {
     return userNames;
 }
 
-void users::displayOfRemainingDays(const SSHConnector& sshConnector,
-                                   const QString& username,
-                                   QSpinBox* spinBox) {
+void users::displayOfRemainingDays(const SSHConnector &sshConnector,
+                                   const QString &username,
+                                   QSpinBox *spinBox)
+{
     // Execute the command remotely
-    std::string command = "echo $(($(crontab -l | grep " + username.toStdString() +
-                          " | grep -oP '\\*/\\K\\d+') - ((($(date +%s) - $(crontab -l | grep "
-                          + username.toStdString() +
-                          " | awk -F'#' '{print $2}' | tr -d ' ')) / 60))))";
+    std::string command = "echo $(($(crontab -l | grep " + username.toStdString()
+                          + " | grep -oP '\\*/\\K\\d+') - ((($(date +%s) - $(crontab -l | grep "
+                          + username.toStdString()
+                          + " | awk -F'#' '{print $2}' | tr -d ' ')) / 60))))";
     std::string result = sshConnector.executeCommand(command);
 
     // Process the result and update the spinBoxLimitDays
@@ -43,40 +51,44 @@ void users::displayOfRemainingDays(const SSHConnector& sshConnector,
     spinBox->setValue(remainingDays);
 }
 
-void users::createCronTask(const SSHConnector& sshConnector,
-                           const QString& username,
-                           const QString& valueInMinutes) {
+void users::createCronTask(const SSHConnector &sshConnector,
+                           const QString &username,
+                           const QString &valueInMinutes)
+{
     // Build the command to add a cron task using the value from spinBoxLimitDays
-    std::string command = "(crontab -l ; echo \"*/" + valueInMinutes.toStdString() +
-                          " * * * * /bin/mv ~/configs/" + username.toStdString() +
-                          ".conf ~/configs/" + username.toStdString() + ".timeout && " +
-                          "(crontab -l | grep -v '" + username.toStdString() +
-                          ".conf' | crontab -) && sudo -S pivpn -off -y " + username.toStdString() +
-                          " # $(date +\\%s)\") | crontab -";
+    std::string command = "(crontab -l ; echo \"*/" + valueInMinutes.toStdString()
+                          + " * * * * /bin/mv ~/configs/" + username.toStdString()
+                          + ".conf ~/configs/" + username.toStdString() + ".timeout && "
+                          + "(crontab -l | grep -v '" + username.toStdString()
+                          + ".conf' | crontab -) && sudo -S pivpn -off -y " + username.toStdString()
+                          + " # $(date +\\%s)\") | crontab -";
     // Execute the command remotely
     sshConnector.executeCommand(command);
 }
 
-void users::createPiVPNUser(const SSHConnector& sshConnector,
-                            const QString& username,
-                            const QString& password) {
+void users::createPiVPNUser(const SSHConnector &sshConnector,
+                            const QString &username,
+                            const QString &password)
+{
     // Build the command to add a user in PiVPN using sudo and passing the password
-    std::string command = "echo '" + password.toStdString() +
-                          "' | sudo -S pivpn -a -n " + username.toStdString();
+    std::string command = "echo '" + password.toStdString() + "' | sudo -S pivpn -a -n "
+                          + username.toStdString();
     sshConnector.executeCommand(command);
 }
 
-void users::generateQRCode(const SSHConnector& sshConnector, const QString& username) {
+void users::generateQRCode(const SSHConnector &sshConnector, const QString &username)
+{
     // Construct the qrencode command
-    std::string command = "echo $(cat ~/configs/" + username.toStdString() +
-                          ".conf) | qrencode -t PNG -o ~/configs/" + username.toStdString() +
-                          "_config.png";
+    std::string command = "echo $(cat ~/configs/" + username.toStdString()
+                          + ".conf) | qrencode -t PNG -o ~/configs/" + username.toStdString()
+                          + "_config.png";
 
     // Execute the command remotely
     std::string result = sshConnector.executeCommand(command);
 }
 
-void users::moveFileFromServerToLocal(const SSHConnector& sshConnector, const QString& username) {
+void users::moveFileFromServerToLocal(const SSHConnector &sshConnector, const QString &username)
+{
     // Construct source path
     std::string sourcePath = "~/configs/" + username.toStdString() + "_config.png";
 
@@ -99,21 +111,22 @@ void users::moveFileFromServerToLocal(const SSHConnector& sshConnector, const QS
     }
 }
 
-void users::activateUser(const SSHConnector& sshConnector,
-                         const QString& username,
-                         const QString& valueInMinutes) {
+void users::activateUser(const SSHConnector &sshConnector,
+                         const QString &username,
+                         const QString &valueInMinutes)
+{
     // Build the command to rename the timeout file to conf file
-    std::string renameCommand = "mv ~/configs/" + username.toStdString() +
-                                ".timeout ~/configs/" + username.toStdString() + ".conf";
+    std::string renameCommand = "mv ~/configs/" + username.toStdString() + ".timeout ~/configs/"
+                                + username.toStdString() + ".conf";
     sshConnector.executeCommand(renameCommand);
 
     // Build the command to add a cron task using the value from spinBoxLimitDays
-    std::string command = "(crontab -l ; echo \"*/" + valueInMinutes.toStdString() +
-                          " * * * * /bin/mv ~/configs/" + username.toStdString() +
-                          ".conf ~/configs/" + username.toStdString() + ".timeout && " +
-                          "(crontab -l | grep -v '" + username.toStdString() +
-                          ".conf' | crontab -) && sudo -S pivpn -off -y " + username.toStdString() +
-                          " # $(date +\\%s)\") | crontab -";
+    std::string command = "(crontab -l ; echo \"*/" + valueInMinutes.toStdString()
+                          + " * * * * /bin/mv ~/configs/" + username.toStdString()
+                          + ".conf ~/configs/" + username.toStdString() + ".timeout && "
+                          + "(crontab -l | grep -v '" + username.toStdString()
+                          + ".conf' | crontab -) && sudo -S pivpn -off -y " + username.toStdString()
+                          + " # $(date +\\%s)\") | crontab -";
     // Execute the command remotely
     sshConnector.executeCommand(command);
 
@@ -123,4 +136,3 @@ void users::activateUser(const SSHConnector& sshConnector,
 
     std::cout << "User '" << username.toStdString() << "' activated successfully." << std::endl;
 }
-

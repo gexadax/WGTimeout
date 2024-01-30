@@ -1,13 +1,14 @@
 // mainwindow.cpp
-#include "./ui_mainwindow.h"
 #include "mainwindow.h"
-#include "settings.h"
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
     ui->setupUi(this);
 
     // Connect to SSH and load settings
-    sshConnector = checkAndOpenSettingsDialog();  // Use the member variable
+    sshConnector = checkAndOpenSettingsDialog();
 
     // Display user names in the listViewUsers widget
     displayUserNames();
@@ -15,7 +16,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->listViewUsers, &QListView::clicked, this, &MainWindow::onListViewUserClicked);
 }
 
-void MainWindow::displayUserNames() {
+void MainWindow::displayUserNames()
+{
     // Get the list of user names using the getUserNames function
     QStringList userNames = users::getUserNames(sshConnector);
 
@@ -29,7 +31,8 @@ void MainWindow::displayUserNames() {
     ui->listViewUsers->setModel(model);
 }
 
-MainWindow::~MainWindow() {
+MainWindow::~MainWindow()
+{
     delete ui;
 }
 
@@ -41,13 +44,14 @@ void MainWindow::on_actionExit_triggered()
 void MainWindow::on_actionSettings_triggered()
 {
     // Create an instance of the DialogSettings class
-    DialogSettings settingsDialog(this); // Assuming DialogSettings is a QDialog
+    DialogSettings settingsDialog(this);
 
     // Show the settings window
     settingsDialog.exec();
 }
 
-SSHConnector MainWindow::checkAndOpenSettingsDialog() {
+SSHConnector MainWindow::checkAndOpenSettingsDialog()
+{
     // Path to the program directory
     QString programDir = QCoreApplication::applicationDirPath();
 
@@ -63,7 +67,7 @@ SSHConnector MainWindow::checkAndOpenSettingsDialog() {
         if (settingsDialog.exec() != QDialog::Accepted) {
             // Canceled or closed, handle accordingly
             this->close();
-            return SSHConnector();  // Return an empty SSHConnector instance
+            return SSHConnector();
         }
     }
 
@@ -87,7 +91,7 @@ SSHConnector MainWindow::checkAndOpenSettingsDialog() {
         // Connection error
         std::cerr << "SSH Connection failed" << std::endl;
         this->close();
-        return SSHConnector();  // Return an empty SSHConnector instance
+        return SSHConnector();
     }
 
     // Configure sudo with the entered username and command path
@@ -98,15 +102,17 @@ SSHConnector MainWindow::checkAndOpenSettingsDialog() {
         return SSHConnector();
     }
 
-    return sshConnector;  // Return the SSHConnector instance
+    return sshConnector;
 }
 
-void MainWindow::onListViewUserClicked(const QModelIndex &index) {
+void MainWindow::onListViewUserClicked(const QModelIndex &index)
+{
     // Get the selected username from the clicked item
     QString selectedUsername = index.data(Qt::DisplayRole).toString();
 
     // Remove the ".timeout" extension from the selected username
-    selectedUsername = selectedUsername.left(selectedUsername.length() - QString(".timeout").length());
+    selectedUsername = selectedUsername.left(selectedUsername.length()
+                                             - QString(".timeout").length());
 
     // Update the lineEditAddUser with the selected username
     ui->lineEditAddUser->setText(selectedUsername);
@@ -115,7 +121,8 @@ void MainWindow::onListViewUserClicked(const QModelIndex &index) {
     users::displayOfRemainingDays(sshConnector, selectedUsername, ui->spinBoxLimitDays);
 }
 
-void MainWindow::on_pushButtonAddUser_clicked() {
+void MainWindow::on_pushButtonAddUser_clicked()
+{
     // Get the username from lineEditAddUser
     QString username = ui->lineEditAddUser->text().trimmed();
 
@@ -123,7 +130,7 @@ void MainWindow::on_pushButtonAddUser_clicked() {
     QString password = DialogSettings::getPasswordFromSettings();
 
     // Optionally, get the value from spinBoxLimitDays
-    QString limitDays = QString::number(ui->spinBoxLimitDays->value()); // Convert int to QString
+    QString limitDays = QString::number(ui->spinBoxLimitDays->value());
 
     // Execute the crontab command with the updated createCronTask signature
     users::createCronTask(sshConnector, username, limitDays);
@@ -159,12 +166,13 @@ void MainWindow::on_pushButtonDeleteUser_clicked()
     users::displayOfRemainingDays(sshConnector, username, ui->spinBoxLimitDays);
 }
 
-void MainWindow::on_pushButtonActivateUser_clicked() {
+void MainWindow::on_pushButtonActivateUser_clicked()
+{
     // Get the username from lineEditAddUser
     QString username = ui->lineEditAddUser->text().trimmed();
 
     // Optionally, get the value from spinBoxLimitDays
-    QString limitDays = QString::number(ui->spinBoxLimitDays->value()); // Convert int to QString
+    QString limitDays = QString::number(ui->spinBoxLimitDays->value());
 
     // Activate the user
     users::activateUser(sshConnector, username, limitDays);

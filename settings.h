@@ -2,8 +2,10 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+#include <QSettings>
+#include <QDialog>
 #include "connect.h"
-#include "QDialog"
+#include "ui_settings.h"
 
 namespace Ui {
 class DialogSettings;
@@ -20,18 +22,18 @@ public:
     std::string getUsername() const;
     std::string getPassword() const;
     static QString getPasswordFromSettings();
-    static void loadSettings(const QString& filePath,
-                             QString& hostname,
-                             QString& username,
-                             QString& password,
-                             int& port);
+    static void loadSettings(const QString &filePath,
+                             QString &hostname,
+                             QString &username,
+                             QString &password,
+                             int &port);
     explicit DialogSettings(QWidget *parent = nullptr);
-    bool configureSudo(const SSHConnector& sshConnector,
-                       const std::string& username,
-                       const std::string& commandPath);
+    bool configureSudo(const SSHConnector &sshConnector,
+                       const std::string &username,
+                       const std::string &commandPath);
 private slots:
     void on_buttonBox_settings_accepted();
-    void executeSSHCommand(const std::string& command);
+    void executeSSHCommand(const std::string &command);
 
 private:
     Ui::DialogSettings *ui;

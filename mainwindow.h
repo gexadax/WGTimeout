@@ -2,10 +2,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "QStringListModel"
-#include "QMainWindow"
+#include <QFile>
+#include <QMainWindow>
+#include <QStringListModel>
+#include "./ui_mainwindow.h"
+#include "settings.h"
 #include "users.h"
-#include "QFile"
 
 namespace Ui {
 class MainWindow;
@@ -22,11 +24,10 @@ private slots:
     void on_actionExit_triggered();
     void on_actionSettings_triggered();
     void on_pushButtonAddUser_clicked();
+    void on_pushButtonDeleteUser_clicked();
+    void on_pushButtonActivateUser_clicked();
     void onListViewUserClicked(const QModelIndex &index);
 
-    void on_pushButtonDeleteUser_clicked();
-
-    void on_pushButtonActivateUser_clicked();
 
 private:
     Ui::MainWindow *ui;
