@@ -78,10 +78,9 @@ void users::createPiVPNUser(const SSHConnector &sshConnector,
 
 void users::generateQRCode(const SSHConnector &sshConnector, const QString &username)
 {
-    // Construct the qrencode command
-    std::string command = "echo $(cat ~/configs/" + username.toStdString()
-                          + ".conf) | qrencode -t PNG -o ~/configs/" + username.toStdString()
-                          + "_config.png";
+    // Construct the qrencode command without using echo
+    std::string command = "qrencode -t PNG -o ~/configs/" + username.toStdString()
+                          + "_config.png < ~/configs/" + username.toStdString() + ".conf";
 
     // Execute the command remotely
     std::string result = sshConnector.executeCommand(command);

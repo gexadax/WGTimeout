@@ -86,7 +86,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Add User</string>
+          <string>Add</string>
          </property>
         </widget>
         <widget class="QPushButton" name="pushButtonDeleteUser">
@@ -97,7 +97,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Delete User</string>
+          <string>Delete</string>
          </property>
         </widget>
         <widget class="QPushButton" name="pushButtonActivateUser">
@@ -108,7 +108,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Activate User</string>
+          <string>Activate</string>
          </property>
         </widget>
        </widget>

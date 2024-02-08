@@ -101,7 +101,7 @@ void DialogSettings::executeSSHCommand(const std::string &command)
     }
 }
 
-bool DialogSettings::configureSudo(const SSHConnector &sshConnector,
+bool DialogSettings::addSudoEntry(const SSHConnector &sshConnector,
                                    const std::string &username,
                                    const std::string &commandPath)
 {

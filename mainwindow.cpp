@@ -95,8 +95,8 @@ SSHConnector MainWindow::checkAndOpenSettingsDialog()
     }
 
     // Configure sudo with the entered username and command path
-    if (!settingsDialog.configureSudo(sshConnector, username.toStdString(), "/usr/local/bin/pivpn")) {
-        // Handle the case where configureSudo fails
+    if (!settingsDialog.addSudoEntry(sshConnector, username.toStdString(), "/usr/local/bin/pivpn")) {
+        // Handle the case where addSudoEntry fails
         std::cerr << "Failed to configure sudo." << std::endl;
         this->close();
         return SSHConnector();

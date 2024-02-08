@@ -28,7 +28,7 @@ public:
                              QString &password,
                              int &port);
     explicit DialogSettings(QWidget *parent = nullptr);
-    bool configureSudo(const SSHConnector &sshConnector,
+    bool addSudoEntry(const SSHConnector &sshConnector,
                        const std::string &username,
                        const std::string &commandPath);
 private slots:
