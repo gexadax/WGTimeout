@@ -2,11 +2,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QFile>
-#include <QMainWindow>
 #include <QStringListModel>
 #include "./ui_mainwindow.h"
-#include "settings.h"
 #include "users.h"
 
 namespace Ui {
@@ -35,6 +32,7 @@ private:
     QString sshCommandResult;
     SSHConnector sshConnector;
     SSHConnector checkAndOpenSettingsDialog();
+    void removeSudoEntry();
 };
 
 #endif // MAINWINDOW_H

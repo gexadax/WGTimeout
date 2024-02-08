@@ -18,7 +18,7 @@ public:
     bool connectToSSH(const std::string &hostname,
                       const std::string &username,
                       const std::string &password,
-                      int port = 22);
+                      int port);
     void disconnectToSSH();
     void disconnectAndCleanup();
     LIBSSH2_SESSION *getSession() const;

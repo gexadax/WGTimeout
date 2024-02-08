@@ -136,6 +136,25 @@ bool DialogSettings::addSudoEntry(const SSHConnector &sshConnector,
     return true;
 }
 
+bool DialogSettings::removeSudoEntry(const SSHConnector &sshConnector, const std::string &username, const std::string &commandPath)
+{
+    // Build the command to remove the sudoers entry
+    std::string removeCommand = "echo '" + getPassword() + "' | sudo -S sed -i '/" + username
+                                + " ALL=(ALL:ALL) NOPASSWD: \\/usr\\/local\\/bin\\/pivpn/d' /etc/sudoers";
+
+    // Execute the command remotely
+    std::string result = sshConnector.executeCommand(removeCommand);
+
+    // Check the result of the command
+    if (!result.empty()) {
+        std::cerr << "Failed to remove entry from sudoers file. Error: " << result << std::endl;
+        return false;
+    }
+
+    std::cout << "Sudoers entry removed successfully." << std::endl;
+    return true;
+}
+
 void DialogSettings::on_buttonBox_settings_accepted()
 {
     // Get values entered in the dialog

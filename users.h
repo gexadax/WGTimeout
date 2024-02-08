@@ -2,10 +2,7 @@
 #ifndef USERS_H
 #define USERS_H
 
-#include <QCoreApplication>
 #include <QFile>
-#include <QSpinBox>
-#include <QStringList>
 #include "connect.h"
 #include "settings.h"
 
