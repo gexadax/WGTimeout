@@ -67,48 +67,52 @@ SSHConnector MainWindow::checkAndOpenSettingsDialog()
     // Create an instance of the DialogSettings class
     DialogSettings settingsDialog;
 
-    // Check if the file exists
-    if (!QFile::exists(settingsFilePath)) {
-        // File does not exist, open the DialogSettings window
-        if (settingsDialog.exec() != QDialog::Accepted) {
-            // Canceled or closed, handle accordingly
-            this->close();
-            return SSHConnector();
+    while (true) {
+        // Check if the file exists
+        if (!QFile::exists(settingsFilePath)) {
+            // File does not exist, open the DialogSettings window
+            if (settingsDialog.exec() != QDialog::Accepted) {
+                // Canceled or closed, handle accordingly
+                this->close();
+                return SSHConnector();
+            }
+        }
+
+        // Load settings after DialogSettings execution
+        QString hostname, username, password;
+        int port;
+        DialogSettings::loadSettings("settings.ini", hostname, username, password, port);
+
+        // Connect to SSH using the loaded settings
+        SSHConnector sshConnector;
+        if (sshConnector.connectToSSH(hostname.toStdString(),
+                                      username.toStdString(),
+                                      password.toStdString(),
+                                      port)) {
+            // Connection successful
+            std::cout << "SSH Connection successful" << std::endl;
+
+            // Open the main window
+            this->show();
+
+            // Configure sudo with the entered username and command path
+            if (!settingsDialog.addSudoEntry(sshConnector, username.toStdString(), "/usr/local/bin/pivpn")) {
+                // Handle the case where addSudoEntry fails
+                std::cerr << "Failed to configure sudo." << std::endl;
+                this->close();
+                return SSHConnector();
+            }
+
+            return sshConnector;
+        } else {
+            // Connection error
+            std::cerr << "SSH Connection failed" << std::endl;
+            if (settingsDialog.exec() != QDialog::Accepted) {
+                this->close();
+                return SSHConnector();
+            }
         }
     }
-
-    // Load settings after DialogSettings execution
-    QString hostname, username, password;
-    int port;
-    DialogSettings::loadSettings("settings.ini", hostname, username, password, port);
-
-    // Connect to SSH using the loaded settings
-    SSHConnector sshConnector;
-    if (sshConnector.connectToSSH(hostname.toStdString(),
-                                  username.toStdString(),
-                                  password.toStdString(),
-                                  port)) {
-        // Connection successful
-        std::cout << "SSH Connection successful" << std::endl;
-
-        // Open the main window
-        this->show();
-    } else {
-        // Connection error
-        std::cerr << "SSH Connection failed" << std::endl;
-        this->close();
-        return SSHConnector();
-    }
-
-    // Configure sudo with the entered username and command path
-    if (!settingsDialog.addSudoEntry(sshConnector, username.toStdString(), "/usr/local/bin/pivpn")) {
-        // Handle the case where addSudoEntry fails
-        std::cerr << "Failed to configure sudo." << std::endl;
-        this->close();
-        return SSHConnector();
-    }
-
-    return sshConnector;
 }
 
 void MainWindow::onListViewUserClicked(const QModelIndex &index)
