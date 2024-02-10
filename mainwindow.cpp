@@ -121,8 +121,7 @@ void MainWindow::onListViewUserClicked(const QModelIndex &index)
     QString selectedUsername = index.data(Qt::DisplayRole).toString();
 
     // Remove the ".timeout" extension from the selected username
-    selectedUsername = selectedUsername.left(selectedUsername.length()
-                                             - QString(".timeout").length());
+    selectedUsername.replace(".timeout", "");
 
     // Update the lineEditAddUser with the selected username
     ui->lineEditAddUser->setText(selectedUsername);
