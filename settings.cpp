@@ -106,8 +106,9 @@ bool DialogSettings::addSudoEntry(const SSHConnector &sshConnector,
                                   const std::string &commandPath)
 {
     // Build the command to check if the sudoers entry already exists
-    std::string checkCommand = "echo '" + getPassword() + "' | sudo -S cat /etc/sudoers.d/pivpn | grep '"
-                               + username + " ALL=(ALL:ALL) NOPASSWD: " + commandPath + "'";
+    std::string checkCommand = "echo '" + getPassword()
+                               + "' | sudo -S cat /etc/sudoers.d/pivpn | grep '" + username
+                               + " ALL=(ALL:ALL) NOPASSWD: " + commandPath + "'";
 
     // Execute the command remotely for checking
     std::string checkResult = sshConnector.executeCommand(checkCommand);
@@ -122,10 +123,11 @@ bool DialogSettings::addSudoEntry(const SSHConnector &sshConnector,
     std::cout << "Adding sudoers entry..." << std::endl;
 
     // Build the command to add the sudoers entry using sudo -S
-    std::string addCommand = "echo '" + getPassword() + "' | sudo -S sh -c 'echo \"" + username
-                             + " ALL=(ALL:ALL) NOPASSWD: " + commandPath + "\" > /etc/sudoers.d/pivpn && "
-                             + "sudo chown root:root /etc/sudoers.d/pivpn && " // Change owner back to root
-                             + "sudo chmod 400 /etc/sudoers.d/pivpn'"; // Set permissions
+    std::string addCommand
+        = "echo '" + getPassword() + "' | sudo -S sh -c 'echo \"" + username
+          + " ALL=(ALL:ALL) NOPASSWD: " + commandPath + "\" > /etc/sudoers.d/pivpn && "
+          + "sudo chown root:root /etc/sudoers.d/pivpn && " // Change owner back to root
+          + "sudo chmod 400 /etc/sudoers.d/pivpn'";         // Set permissions
 
     std::string result = sshConnector.executeCommand(addCommand);
 

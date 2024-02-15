@@ -25,7 +25,6 @@ private slots:
     void on_pushButtonActivateUser_clicked();
     void onListViewUserClicked(const QModelIndex &index);
 
-
 private:
     Ui::MainWindow *ui;
     void displayUserNames();

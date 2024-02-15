@@ -57,11 +57,10 @@ void users::createCronTask(const SSHConnector &sshConnector,
 {
     // Build the command to add a cron task using the value from spinBoxLimitDays
     std::string command = "(crontab -l ; echo \"* * */" + valueInDays.toStdString()
-                          + " * * /bin/mv ~/configs/" + username.toStdString()
-                          + ".conf ~/configs/" + username.toStdString() + ".timeout && "
-                          + "(crontab -l | grep -v '" + username.toStdString()
-                          + ".conf' | crontab -) && sudo -S pivpn -off -y " + username.toStdString()
-                          + " # $(date +\\%s)\") | crontab -";
+                          + " * * /bin/mv ~/configs/" + username.toStdString() + ".conf ~/configs/"
+                          + username.toStdString() + ".timeout && " + "(crontab -l | grep -v '"
+                          + username.toStdString() + ".conf' | crontab -) && sudo -S pivpn -off -y "
+                          + username.toStdString() + " # $(date +\\%s)\") | crontab -";
     // Execute the command remotely
     sshConnector.executeCommand(command);
 }
@@ -121,11 +120,10 @@ void users::activateUser(const SSHConnector &sshConnector,
 
     // Build the command to add a cron task using the value from spinBoxLimitDays
     std::string command = "(crontab -l ; echo \"* * */" + valueInDays.toStdString()
-                          + " * * /bin/mv ~/configs/" + username.toStdString()
-                          + ".conf ~/configs/" + username.toStdString() + ".timeout && "
-                          + "(crontab -l | grep -v '" + username.toStdString()
-                          + ".conf' | crontab -) && sudo -S pivpn -off -y " + username.toStdString()
-                          + " # $(date +\\%s)\") | crontab -";
+                          + " * * /bin/mv ~/configs/" + username.toStdString() + ".conf ~/configs/"
+                          + username.toStdString() + ".timeout && " + "(crontab -l | grep -v '"
+                          + username.toStdString() + ".conf' | crontab -) && sudo -S pivpn -off -y "
+                          + username.toStdString() + " # $(date +\\%s)\") | crontab -";
     // Execute the command remotely
     sshConnector.executeCommand(command);
 

@@ -28,8 +28,8 @@ public:
                              int &port);
     explicit DialogSettings(QWidget *parent = nullptr);
     bool addSudoEntry(const SSHConnector &sshConnector,
-                       const std::string &username,
-                       const std::string &commandPath);
+                      const std::string &username,
+                      const std::string &commandPath);
 
 private slots:
     void on_buttonBox_settings_accepted();
