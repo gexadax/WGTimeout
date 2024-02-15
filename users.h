@@ -11,7 +11,7 @@ class users
 public:
     static void createCronTask(const SSHConnector &sshConnector,
                                const QString &username,
-                               const QString &valueInMinutes);
+                               const QString &valueInDays);
     static QStringList getUserNames(const SSHConnector &sshConnector);
     static void createPiVPNUser(const SSHConnector &sshConnector,
                                 const QString &username,

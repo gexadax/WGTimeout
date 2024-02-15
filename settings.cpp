@@ -102,11 +102,11 @@ void DialogSettings::executeSSHCommand(const std::string &command)
 }
 
 bool DialogSettings::addSudoEntry(const SSHConnector &sshConnector,
-                                   const std::string &username,
-                                   const std::string &commandPath)
+                                  const std::string &username,
+                                  const std::string &commandPath)
 {
     // Build the command to check if the sudoers entry already exists
-    std::string checkCommand = "echo '" + getPassword() + "' | sudo -S cat /etc/sudoers | grep '"
+    std::string checkCommand = "echo '" + getPassword() + "' | sudo -S cat /etc/sudoers.d/pivpn | grep '"
                                + username + " ALL=(ALL:ALL) NOPASSWD: " + commandPath + "'";
 
     // Execute the command remotely for checking
@@ -123,7 +123,10 @@ bool DialogSettings::addSudoEntry(const SSHConnector &sshConnector,
 
     // Build the command to add the sudoers entry using sudo -S
     std::string addCommand = "echo '" + getPassword() + "' | sudo -S sh -c 'echo \"" + username
-                             + " ALL=(ALL:ALL) NOPASSWD: " + commandPath + "\" >> /etc/sudoers'";
+                             + " ALL=(ALL:ALL) NOPASSWD: " + commandPath + "\" > /etc/sudoers.d/pivpn && "
+                             + "sudo chown root:root /etc/sudoers.d/pivpn && " // Change owner back to root
+                             + "sudo chmod 400 /etc/sudoers.d/pivpn'"; // Set permissions
+
     std::string result = sshConnector.executeCommand(addCommand);
 
     // Check the result of the command
@@ -133,25 +136,6 @@ bool DialogSettings::addSudoEntry(const SSHConnector &sshConnector,
     }
 
     std::cout << "Sudoers entry added successfully." << std::endl;
-    return true;
-}
-
-bool DialogSettings::removeSudoEntry(const SSHConnector &sshConnector, const std::string &username, const std::string &commandPath)
-{
-    // Build the command to remove the sudoers entry
-    std::string removeCommand = "echo '" + getPassword() + "' | sudo -S sed -i '/" + username
-                                + " ALL=(ALL:ALL) NOPASSWD: \\/usr\\/local\\/bin\\/pivpn/d' /etc/sudoers";
-
-    // Execute the command remotely
-    std::string result = sshConnector.executeCommand(removeCommand);
-
-    // Check the result of the command
-    if (!result.empty()) {
-        std::cerr << "Failed to remove entry from sudoers file. Error: " << result << std::endl;
-        return false;
-    }
-
-    std::cout << "Sudoers entry removed successfully." << std::endl;
     return true;
 }
 

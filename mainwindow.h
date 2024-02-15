@@ -32,7 +32,6 @@ private:
     QString sshCommandResult;
     SSHConnector sshConnector;
     SSHConnector checkAndOpenSettingsDialog();
-    void removeSudoEntry();
 };
 
 #endif // MAINWINDOW_H

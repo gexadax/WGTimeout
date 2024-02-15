@@ -30,9 +30,7 @@ public:
     bool addSudoEntry(const SSHConnector &sshConnector,
                        const std::string &username,
                        const std::string &commandPath);
-    bool removeSudoEntry(const SSHConnector &sshConnector,
-                         const std::string &username,
-                         const std::string &commandPath);
+
 private slots:
     void on_buttonBox_settings_accepted();
     void executeSSHCommand(const std::string &command);

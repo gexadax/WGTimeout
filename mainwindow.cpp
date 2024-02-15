@@ -33,12 +33,6 @@ void MainWindow::displayUserNames()
 
 MainWindow::~MainWindow()
 {
-    DialogSettings settingsDialog;
-
-    // Call the removeSudoEntry function to remove sudo entry
-    settingsDialog.removeSudoEntry(sshConnector,
-                                   settingsDialog.getUsername(),
-                                   "/usr/local/bin/pivpn");
     delete ui;
 }
 

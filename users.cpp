@@ -53,11 +53,11 @@ void users::displayOfRemainingDays(const SSHConnector &sshConnector,
 
 void users::createCronTask(const SSHConnector &sshConnector,
                            const QString &username,
-                           const QString &valueInMinutes)
+                           const QString &valueInDays)
 {
     // Build the command to add a cron task using the value from spinBoxLimitDays
-    std::string command = "(crontab -l ; echo \"*/" + valueInMinutes.toStdString()
-                          + " * * * * /bin/mv ~/configs/" + username.toStdString()
+    std::string command = "(crontab -l ; echo \"* * */" + valueInDays.toStdString()
+                          + " * * /bin/mv ~/configs/" + username.toStdString()
                           + ".conf ~/configs/" + username.toStdString() + ".timeout && "
                           + "(crontab -l | grep -v '" + username.toStdString()
                           + ".conf' | crontab -) && sudo -S pivpn -off -y " + username.toStdString()
@@ -112,7 +112,7 @@ void users::moveFileFromServerToLocal(const SSHConnector &sshConnector, const QS
 
 void users::activateUser(const SSHConnector &sshConnector,
                          const QString &username,
-                         const QString &valueInMinutes)
+                         const QString &valueInDays)
 {
     // Build the command to rename the timeout file to conf file
     std::string renameCommand = "mv ~/configs/" + username.toStdString() + ".timeout ~/configs/"
@@ -120,8 +120,8 @@ void users::activateUser(const SSHConnector &sshConnector,
     sshConnector.executeCommand(renameCommand);
 
     // Build the command to add a cron task using the value from spinBoxLimitDays
-    std::string command = "(crontab -l ; echo \"*/" + valueInMinutes.toStdString()
-                          + " * * * * /bin/mv ~/configs/" + username.toStdString()
+    std::string command = "(crontab -l ; echo \"* * */" + valueInDays.toStdString()
+                          + " * * /bin/mv ~/configs/" + username.toStdString()
                           + ".conf ~/configs/" + username.toStdString() + ".timeout && "
                           + "(crontab -l | grep -v '" + username.toStdString()
                           + ".conf' | crontab -) && sudo -S pivpn -off -y " + username.toStdString()
